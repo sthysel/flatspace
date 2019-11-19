@@ -13,7 +13,7 @@ def _normalize(x):
 
 def _ratio(a, b):
     """ returns a / b if a < b else b / a """
-    return (a * b) / max(a, b) ** 2
+    return (a * b) / max(a, b)**2
 
 
 def _compare(a, b):
@@ -30,7 +30,15 @@ def _compare(a, b):
 
 
 class Particle():
-    def __init__(self, pos, vel, mass, color, shape: {"[", "square", "(", "circle", ".", "dot"}="[", canvas=None):
+    def __init__(
+        self,
+        pos,
+        vel,
+        mass,
+        color,
+        shape: {"[", "square", "(", "circle", ".", "dot"} = "[",
+        canvas=None,
+    ):
         # physical properties
         self.pos = np.array(pos)
         self.vel = np.array(vel)
@@ -45,13 +53,12 @@ class Particle():
     def __eq__(self, other):
         ret = True
         for attr in ["pos", "vel", "color", "mass", "shape"]:
-            ret &= _compare(getattr(self, attr),
-                            getattr(other, attr))
+            ret &= _compare(getattr(self, attr), getattr(other, attr))
         return ret
 
     @property
     def width(self):
-        return 1 if (self.shape == ".") else self.mass ** 0.5
+        return 1 if (self.shape == ".") else self.mass**0.5
 
     def draw(self):
         if self.canvas is not None:
@@ -76,14 +83,14 @@ class Particle():
         mass_factor = 1 - _ratio(self.mass, p.mass)
 
         # the more parallel their velocities are...
-        direction_factor = np.cross(self.vel, p.vel) ** 2 / (norm(self.vel) * norm(p.vel))
+        direction_factor = np.cross(self.vel, p.vel)**2 / (norm(self.vel) * norm(p.vel))
 
         # the more similar their speeds are...
         speed_factor = _ratio(norm(self.vel), norm(p.vel))
 
         # ... the bigger the chance of merging
         #return random() < (speed_factor * direction_factor * mass_factor) ** (1 / 3)
-        return 0.5 < (speed_factor * direction_factor * mass_factor) ** (1 / 3)
+        return 0.5 < (speed_factor * direction_factor * mass_factor)**(1 / 3)
 
     def collide_with(self, p):
         if self.can_merge_with(p):
@@ -110,6 +117,6 @@ class Particle():
         dist = norm(dpos)
 
         # see https://en.wikipedia.org/wiki/Elastic_collision
-        x = 2 / (self.mass + p.mass) * dot(dvel, dpos) / (dist ** 2) * dpos
+        x = 2 / (self.mass + p.mass) * dot(dvel, dpos) / (dist**2) * dpos
         self.vel += p.mass * x
         p.vel -= self.mass * x
