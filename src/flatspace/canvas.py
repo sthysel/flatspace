@@ -29,10 +29,10 @@ class Canvas():
         # window and renderer
         self.preview = preview
         self.render = render
-        filename = strftime('%Y%m%dT%H%M%S', localtime()) + ".mp4"
+        filename = strftime('flatspace-%Y%m%dT%H%M%S', localtime()) + ".mp4"
         if self.render:
-            self.video = VideoWriter(f'./out/{filename}', FourCC(*"mp4v"), self.fps, self.resolution)
-        self.title = f"flatspace preview ({filename})"
+            self.video = VideoWriter(f'{filename}', FourCC(*"mp4v"), self.fps, self.resolution)
+        self.title = f'flatspace preview ({filename})'
 
     def __enter__(self, *args, **kwargs):
         return self
@@ -54,7 +54,7 @@ class Canvas():
     def next_frame(self):
         # output
         if self.render:
-            print(f"rendering frame #{self.frame_no}", end="\r")
+            print(f'rendering frame #{self.frame_no}', end='\r')
             self.video.write(self.current_frame)
         if self.preview:
             cv.imshow(self.title, self.current_frame)
