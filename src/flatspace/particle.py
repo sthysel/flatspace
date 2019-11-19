@@ -16,7 +16,6 @@ def _ratio(a, b):
     return (a * b) / max(a, b) ** 2
 
 
-
 def _compare(a, b):
     type_a = type(a)
     if type_a is not type(b):
