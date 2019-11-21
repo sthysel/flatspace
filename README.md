@@ -3,7 +3,10 @@
 A space simulator, based on Christoph Smithmyer's [Just
 Dust](https://gitlab.com/chrismit3s/just-dust/tree/master/src)
 
-![](docs/flatspace-20191120T011617.gif)
+![Orbit](docs/flatspace-20191120T011617.gif)
+
+
+# Usage
 
 ```zsh
 Usage: flatspace [OPTIONS]
@@ -14,3 +17,13 @@ Options:
   --version           Show the version and exit.
   --help              Show this message and exit.
 ```
+
+# Install
+
+```zsh
+$ pip install .
+```
+
+# Refs
+
+https://www.reddit.com/r/Python/comments/dxq4ea/this_is_one_of_the_most_interesting_outputs_of/
