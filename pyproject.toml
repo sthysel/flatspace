@@ -1,0 +1,43 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "flatspace"
+version = "0.0.1"
+description = "Space is flat here"
+readme = "README.md"
+license = "GPL-2.0"
+requires-python = ">=3.10"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Operating System :: Unix",
+    "Operating System :: POSIX",
+    "Programming Language :: Python :: 3",
+    "Topic :: Utilities",
+]
+dependencies = [
+    "click",
+    "numpy",
+    "opencv-python",
+]
+
+[project.scripts]
+flatspace = "flatspace.cli:cli"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/flatspace"]
+
+[dependency-groups]
+dev = [
+    "ruff",
+    "ty",
+    "pytest",
+    "pre-commit",
+]
+
+[tool.ruff]
+line-length = 120
+
+[tool.pytest.ini_options]
+norecursedirs = ["dist", "build", ".tox"]

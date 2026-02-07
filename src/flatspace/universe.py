@@ -1,5 +1,4 @@
 from itertools import combinations
-from random import random
 
 import numpy as np
 from numpy.linalg import norm
@@ -7,7 +6,7 @@ from numpy.linalg import norm
 from .particle import Particle
 
 
-class Universe():
+class Universe:
     def __init__(self, canvas, bg_color, fg_color=None, particles=0):
         self.MERGE_COUNTER = 0
         self.canvas = canvas
@@ -17,12 +16,15 @@ class Universe():
         self.particles = []
         if isinstance(particles, int):
             for _ in range(particles):
-                self.add_particle(Particle(
-                    pos=(2 * np.random.rand(2) - 1) * self.canvas.size * 0.8,
-                    vel=(2 * np.random.rand(2) - 1) * self.canvas.size * 0,
-                    mass=1.0,
-                    color=fg_color or (255 - self.bg_color),
-                    canvas=self.canvas))
+                self.add_particle(
+                    Particle(
+                        pos=(2 * np.random.rand(2) - 1) * self.canvas.size * 0.8,
+                        vel=(2 * np.random.rand(2) - 1) * self.canvas.size * 0,
+                        mass=1.0,
+                        color=fg_color or (255 - self.bg_color),
+                        canvas=self.canvas,
+                    )
+                )
         else:
             for p in particles:
                 if fg_color is not None:
@@ -62,14 +64,11 @@ class Universe():
                     self.MERGE_COUNTER += 2
                     self.remove_particle(p2)
             else:  # gravitational influence
-                force = diff * (p1.mass * p2.mass) / (dist ** 2) 
+                force = diff * (p1.mass * p2.mass) / (dist**2)
                 p1.apply_force(+force, dt)
                 p2.apply_force(-force, dt)
 
-    def loop(self,
-             terminate_on_last_particle=False,
-             max_ticks=None):
-        max_particles = len(self.particles)
+    def loop(self, terminate_on_last_particle=False, max_ticks=None):
         i = 0
         while True:
             self.draw()

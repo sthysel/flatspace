@@ -1,5 +1,4 @@
 from math import isclose
-from random import random
 
 import numpy as np
 from numpy import allclose, dot
@@ -7,13 +6,13 @@ from numpy.linalg import norm
 
 
 def _normalize(x):
-    """ maps x for [0, inf) to [0, 1) """
+    """maps x for [0, inf) to [0, 1)"""
     return x / (x + 1)
 
 
 def _ratio(a, b):
-    """ returns a / b if a < b else b / a """
-    return (a * b) / max(a, b)**2
+    """returns a / b if a < b else b / a"""
+    return (a * b) / max(a, b) ** 2
 
 
 def _compare(a, b):
@@ -21,29 +20,29 @@ def _compare(a, b):
     if type_a is not type(b):
         return False
 
-    if type_a == float:
+    if type_a is float:
         return isclose(a, b)
-    elif type_a == np.ndarray:
+    elif type_a is np.ndarray:
         return allclose(a, b)
     else:
-        return (a == b)
+        return a == b
 
 
-class Particle():
+class Particle:
     def __init__(
         self,
         pos,
         vel,
         mass,
         color,
-        shape: {"[", "square", "(", "circle", ".", "dot"} = "[",
+        shape="[",
         canvas=None,
     ):
         # physical properties
         self.pos = np.array(pos)
         self.vel = np.array(vel)
         self.mass = mass
-        #self.charge = charge
+        # self.charge = charge
 
         # drawing related properties
         self.canvas = canvas
@@ -83,14 +82,14 @@ class Particle():
         mass_factor = 1 - _ratio(self.mass, p.mass)
 
         # the more parallel their velocities are...
-        direction_factor = np.cross(self.vel, p.vel)**2 / (norm(self.vel) * norm(p.vel))
+        direction_factor = np.cross(self.vel, p.vel) ** 2 / (norm(self.vel) * norm(p.vel))
 
         # the more similar their speeds are...
         speed_factor = _ratio(norm(self.vel), norm(p.vel))
 
         # ... the bigger the chance of merging
-        #return random() < (speed_factor * direction_factor * mass_factor) ** (1 / 3)
-        return 0.5 < (speed_factor * direction_factor * mass_factor)**(1 / 3)
+        # return random() < (speed_factor * direction_factor * mass_factor) ** (1 / 3)
+        return 0.5 < (speed_factor * direction_factor * mass_factor) ** (1 / 3)
 
     def collide_with(self, p):
         if self.can_merge_with(p):

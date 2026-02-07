@@ -3,15 +3,13 @@ from typing import Tuple
 
 import cv2 as cv
 import numpy as np
-from cv2 import VideoWriter
-from cv2 import VideoWriter_fourcc as FourCC
 
 
 def _as_int_tuple(arr):
     return tuple(int(x) for x in arr)
 
 
-class Canvas():
+class Canvas:
     def __init__(
         self,
         resolution: Tuple,
@@ -29,19 +27,22 @@ class Canvas():
         # window and renderer
         self.preview = preview
         self.render = render
-        filename = strftime('flatspace-%Y%m%dT%H%M%S', localtime()) + ".mp4"
+        filename = strftime("flatspace-%Y%m%dT%H%M%S", localtime()) + ".mp4"
         if self.render:
-            self.video = VideoWriter(f'{filename}', FourCC(*"mp4v"), self.fps, self.resolution)
-        self.title = f'flatspace preview ({filename})'
+            fourcc = cv.VideoWriter.fourcc(*"mp4v")  # type: ignore[attr-defined]
+            self.video = cv.VideoWriter(f"{filename}", fourcc, self.fps, self.resolution)
+        self.title = f"flatspace preview ({filename})"
 
     def __enter__(self, *args, **kwargs):
+        self._exited = False
         return self
 
     def __exit__(self, *args, **kwargs):
-        if self.preview:
+        if self.preview and not self._exited:
             cv.destroyWindow(self.title)
-        if self.render:
+        if self.render and not self._exited:
             self.video.release()
+        self._exited = True
 
     @property
     def size(self):
@@ -54,7 +55,7 @@ class Canvas():
     def next_frame(self):
         # output
         if self.render:
-            print(f'rendering frame #{self.frame_no}', end='\r')
+            print(f"rendering frame #{self.frame_no}", end="\r")
             self.video.write(self.current_frame)
         if self.preview:
             cv.imshow(self.title, self.current_frame)

@@ -13,21 +13,21 @@ resolution = (720, 720)
 
 @click.command(context_settings=dict(max_content_width=120))
 @click.option(
-    '--fps',
-    help='FPS',
+    "--fps",
+    help="FPS",
     default=60,
     show_default=True,
 )
 @click.option(
-    '-s',
-    '--suns',
-    help='Number of suns',
+    "-s",
+    "--suns",
+    help="Number of suns",
     default=100,
     show_default=True,
 )
 @click.option(
-    '--preview/--batch',
-    help='Display preview window',
+    "--preview/--batch",
+    help="Display preview window",
     default=True,
     show_default=True,
 )
