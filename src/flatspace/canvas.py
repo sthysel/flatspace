@@ -29,7 +29,7 @@ class Canvas:
         self.render = render
         filename = strftime("flatspace-%Y%m%dT%H%M%S", localtime()) + ".mp4"
         if self.render:
-            fourcc = cv.VideoWriter.fourcc(*"mp4v")  # type: ignore[attr-defined]
+            fourcc = cv.VideoWriter.fourcc(*"mp4v")
             self.video = cv.VideoWriter(f"{filename}", fourcc, self.fps, self.resolution)
         self.title = f"flatspace preview ({filename})"
 

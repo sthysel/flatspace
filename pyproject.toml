@@ -22,6 +22,9 @@ dependencies = [
     "opencv-python",
 ]
 
+[project.optional-dependencies]
+numba = ["numba>=0.61"]
+
 [project.scripts]
 flatspace = "flatspace.cli:cli"
 

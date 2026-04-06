@@ -4,6 +4,7 @@ import click
 import numpy as np
 
 from .canvas import Canvas
+from .engines import create_engine
 from .particle import Particle
 from .universe import Universe
 
@@ -31,8 +32,16 @@ resolution = (720, 720)
     default=True,
     show_default=True,
 )
+@click.option(
+    "--engine",
+    type=click.Choice(["naive", "numpy", "numba"], case_sensitive=False),
+    default="numpy",
+    show_default=True,
+    help="Physics engine backend",
+)
 @click.version_option()
-def cli(fps, suns, preview):
+def cli(fps, suns, preview, engine):
+    eng = create_engine(engine, capacity=suns)
     with Canvas(
         resolution,
         fps,
@@ -40,7 +49,7 @@ def cli(fps, suns, preview):
         preview=preview,
         render=True,
     ) as canvas:
-        universe = Universe(canvas, bg_color)
+        universe = Universe(canvas, bg_color, engine=eng)
         for _ in range(suns):
             universe.add_particle(
                 Particle(

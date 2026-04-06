@@ -1,19 +1,19 @@
-from itertools import combinations
+from __future__ import annotations
 
 import numpy as np
-from numpy.linalg import norm
 
+from .engines import Engine
 from .particle import Particle
 
 
 class Universe:
-    def __init__(self, canvas, bg_color, fg_color=None, particles=0):
+    def __init__(self, canvas, bg_color, engine: Engine, fg_color=None, particles=0):
         self.MERGE_COUNTER = 0
         self.canvas = canvas
         self.bg_color = np.array(bg_color)
+        self.engine = engine
 
-        # particle init
-        self.particles = []
+        self.particles: list[Particle] = []
         if isinstance(particles, int):
             for _ in range(particles):
                 self.add_particle(
@@ -32,17 +32,9 @@ class Universe:
                 p.canvas = self.canvas
                 self.add_particle(p)
 
-        # draw
-        self.draw()
-
-    def add_particle(self, p):
+    def add_particle(self, p: Particle) -> None:
         self.particles.append(p)
-
-    def remove_particle(self, p):
-        for i in range(len(self.particles)):
-            if p == self.particles[i]:
-                self.particles.pop(i)
-                break
+        self.engine.add_particle(np.array(p.pos, dtype=np.float64), np.array(p.vel, dtype=np.float64), float(p.mass))
 
     def draw(self):
         self.canvas.fill(self.bg_color)
@@ -51,22 +43,17 @@ class Universe:
         self.canvas.update()
 
     def tick(self, dt):
-        for p1 in self.particles:
-            p1.tick(dt)
+        removed_indices = self.engine.tick(dt)
 
-        for p1, p2 in combinations(self.particles, r=2):
-            diff = p2.pos - p1.pos
-            dist = norm(diff)
+        # Remove merged particle objects (indices are descending, so pop is safe)
+        for idx in removed_indices:
+            self.particles.pop(idx)
+            self.MERGE_COUNTER += 1
 
-            if dist < (p1.width + p2.width) / 2:  # collision
-                self.MERGE_COUNTER -= 1
-                if p1.collide_with(p2):  # p1 merged with p2
-                    self.MERGE_COUNTER += 2
-                    self.remove_particle(p2)
-            else:  # gravitational influence
-                force = diff * (p1.mass * p2.mass) / (dist**2)
-                p1.apply_force(+force, dt)
-                p2.apply_force(-force, dt)
+        # Sync physics state from engine arrays to particle objects for drawing
+        for i, p in enumerate(self.particles):
+            p.pos = self.engine.positions[i].copy()
+            p.mass = float(self.engine.masses[i])
 
     def loop(self, terminate_on_last_particle=False, max_ticks=None):
         i = 0
